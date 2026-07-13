@@ -327,9 +327,14 @@
     post.submit();
   });
 
+  var lastH = 0;
   function postHeight(){
     try{
-      parent.postMessage({type:'pr-height', height: document.documentElement.scrollHeight}, '*');
+      var el = document.querySelector('.wrap');
+      var h = Math.ceil(el.getBoundingClientRect().height);
+      if (Math.abs(h - lastH) < 5) return; // ignore jitter, prevents growth loop
+      lastH = h;
+      parent.postMessage({type:'pr-height', height: h}, '*');
     }catch(err){}
   }
   window.addEventListener('load', postHeight);
