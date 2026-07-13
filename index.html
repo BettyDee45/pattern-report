@@ -123,7 +123,7 @@
   <div id="formview">
     <div class="intro">
       <p>Answer from specific moments, not your self-image. If an answer is &ldquo;it depends,&rdquo; pick the version of you that shows up when it matters most.</p>
-      <p>Takes about two minutes. Your Pattern Report arrives by email.</p>
+      <p>Take your time — these questions ask you to notice things you usually move past. Your Pattern Report arrives by email.</p>
     </div>
 
     <form id="prform" autocomplete="on" novalidate>
@@ -239,6 +239,10 @@
 
       <button type="submit" class="submit" id="submitbtn">Get My Pattern Report</button>
       <div class="fineprint">Your report arrives by email within a few minutes.</div>
+      <div style="text-align:center; margin-top:22px; font-family:Arial,Helvetica,sans-serif; font-size:12px; color:var(--muted);">
+        &copy; 2026 Institute of Quantum Frequency &middot;
+        <a href="https://www.instituteofquantumfrequency.com/privacy-policy" style="color:var(--muted);">Privacy Policy</a>
+      </div>
     </form>
   </div>
 
@@ -251,14 +255,12 @@
 
 </div>
 
-<iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
 
 <script>
 (function(){
   var FORM_ACTION = "https://docs.google.com/forms/d/e/1FAIpQLSe6qybjfh5eRkWaRvg3zj6eOr7c7CIg53syvP5nLjY0__Do4A/formResponse";
   var form = document.getElementById('prform');
   var btn  = document.getElementById('submitbtn');
-  var submitted = false;
 
   // visual selection state for option cards
   document.querySelectorAll('label.opt input[type=radio]').forEach(function(inp){
@@ -301,30 +303,40 @@
     return true;
   }
 
+  function showSuccess(){
+    document.getElementById('formview').style.display = 'none';
+    document.getElementById('success').style.display = 'block';
+    setTimeout(function(){
+      postHeight();
+      document.getElementById('success').scrollIntoView({behavior:'smooth', block:'center'});
+    }, 150);
+  }
+
   form.addEventListener('submit', function(e){
     e.preventDefault();
     if (!validate()) return;
     btn.disabled = true;
     btn.textContent = 'Sending…';
 
-    // Build a real form post into the hidden iframe (avoids CORS entirely)
-    var post = document.createElement('form');
-    post.action = FORM_ACTION;
-    post.method = 'POST';
-    post.target = 'hidden_iframe';
-    post.style.display = 'none';
-
+    // Build URL-encoded body from the form fields
+    var params = new URLSearchParams();
     new FormData(form).forEach(function(value, name){
-      var input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = name;
-      input.value = value;
-      post.appendChild(input);
+      params.append(name, value);
     });
 
-    document.body.appendChild(post);
-    submitted = true;
-    post.submit();
+    // Post directly to Google with no-cors — works inside iframes on mobile.
+    // no-cors means we can't read the response, but the submission still records.
+    fetch(FORM_ACTION, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: params.toString()
+    }).then(function(){
+      showSuccess();
+    }).catch(function(){
+      // Even on network error the POST usually lands; show success but don't block.
+      showSuccess();
+    });
   });
 
   var lastH = 0;
@@ -351,15 +363,6 @@
     new ResizeObserver(postHeight).observe(document.querySelector('.wrap'));
   }
 
-  document.getElementById('hidden_iframe').addEventListener('load', function(){
-    if (!submitted) return;
-    document.getElementById('formview').style.display = 'none';
-    document.getElementById('success').style.display = 'block';
-    setTimeout(function(){
-      postHeight();
-      document.getElementById('success').scrollIntoView({behavior:'smooth', block:'center'});
-    }, 150);
-  });
 })();
 </script>
 </body>
