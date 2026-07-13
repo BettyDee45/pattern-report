@@ -294,6 +294,7 @@
       if (!ok && !firstMissing) firstMissing = card;
     });
     if (firstMissing){
+      setTimeout(postHeight, 100);
       firstMissing.scrollIntoView({behavior:'smooth', block:'center'});
       return false;
     }
@@ -326,11 +327,22 @@
     post.submit();
   });
 
+  function postHeight(){
+    try{
+      parent.postMessage({type:'pr-height', height: document.documentElement.scrollHeight}, '*');
+    }catch(err){}
+  }
+  window.addEventListener('load', postHeight);
+  window.addEventListener('resize', postHeight);
+
   document.getElementById('hidden_iframe').addEventListener('load', function(){
     if (!submitted) return;
     document.getElementById('formview').style.display = 'none';
     document.getElementById('success').style.display = 'block';
-    window.scrollTo({top:0, behavior:'smooth'});
+    setTimeout(function(){
+      postHeight();
+      document.getElementById('success').scrollIntoView({behavior:'smooth', block:'center'});
+    }, 150);
   });
 })();
 </script>
