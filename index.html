@@ -331,14 +331,25 @@
   function postHeight(){
     try{
       var el = document.querySelector('.wrap');
-      var h = Math.ceil(el.getBoundingClientRect().height);
+      var h = Math.ceil(el.getBoundingClientRect().height) + 40;
       if (Math.abs(h - lastH) < 5) return; // ignore jitter, prevents growth loop
       lastH = h;
       parent.postMessage({type:'pr-height', height: h}, '*');
     }catch(err){}
   }
-  window.addEventListener('load', postHeight);
+  // re-measure repeatedly while fonts/images settle, and watch for layout changes
+  window.addEventListener('load', function(){
+    postHeight();
+    var tries = 0;
+    var iv = setInterval(function(){
+      postHeight();
+      if (++tries > 10) clearInterval(iv); // covers the first ~5 seconds
+    }, 500);
+  });
   window.addEventListener('resize', postHeight);
+  if (window.ResizeObserver){
+    new ResizeObserver(postHeight).observe(document.querySelector('.wrap'));
+  }
 
   document.getElementById('hidden_iframe').addEventListener('load', function(){
     if (!submitted) return;
