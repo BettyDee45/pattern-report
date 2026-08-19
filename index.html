@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>IQF Pattern Report</title>
-<meta name="description" content="Answer 12 simple questions about your life. Your personal Pattern Report arrives by email.">
+<meta name="description" content="Answer 10 simple questions about your life. Your personal Pattern Report arrives by email.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -26,8 +26,8 @@
     line-height:1.6;
     -webkit-font-smoothing:antialiased;
   }
-  .wrap{max-width:780px;margin:0 auto;padding:28px 20px 80px 20px;}
-  .brand{text-align:center;margin-bottom:28px;}
+  .wrap{max-width:780px;margin:0 auto;padding:28px 20px 60px 20px;}
+  .brand{text-align:center;margin-bottom:22px;}
   .brand img{width:84px;height:auto;margin-bottom:14px;}
   .brand .institute{
     font-size:12px;letter-spacing:3px;color:var(--navy);
@@ -39,32 +39,45 @@
     margin-top:10px;
   }
   .brand .rule{width:56px;height:2px;background:var(--gold);margin:18px auto 0 auto;}
+
+  /* Progress */
+  .progresswrap{max-width:620px;margin:0 auto 4px auto;}
+  .progressbar{height:5px;background:#E4DFCF;border-radius:3px;overflow:hidden;}
+  .progressfill{height:100%;width:0;background:var(--gold);border-radius:3px;transition:width .4s ease;}
+  .progresstext{
+    text-align:center;font-size:11px;letter-spacing:2px;text-transform:uppercase;
+    color:var(--gold);font-weight:700;margin-top:12px;
+  }
+
   .intro{
     font-size:16.5px;color:var(--ink);
-    margin:28px auto 8px auto;
+    margin:6px auto 4px auto;
     text-align:center;
     max-width:620px;
   }
   .intro p{margin-bottom:14px;}
+
+  /* Steps */
+  .stepbody{min-height:340px;}
+  .step{display:none;animation:fadein .28s ease;}
+  .step.active{display:block;}
+  @keyframes fadein{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+
   .card{
     background:var(--card);
     border:1px solid var(--border);
     border-radius:10px;
     padding:24px 22px;
-    margin:18px 0;
-  }
-  .qnum{
-    font-size:11px;letter-spacing:2px;text-transform:uppercase;
-    color:var(--gold);font-weight:700;margin-bottom:8px;
+    margin:16px 0;
   }
   .qtext{
     font-family:Georgia,'Times New Roman',serif;
-    font-size:18.5px;color:var(--navy);line-height:1.5;
-    margin-bottom:16px;
+    font-size:19px;color:var(--navy);line-height:1.5;
+    margin-bottom:18px;
   }
   label.opt{
     display:flex;align-items:flex-start;gap:12px;
-    padding:12px 14px;border:1px solid var(--border);
+    padding:13px 15px;border:1px solid var(--border);
     border-radius:8px;margin-bottom:10px;cursor:pointer;
     font-size:15.5px;transition:border-color .15s, background .15s;
   }
@@ -82,21 +95,39 @@
   .card.missing .missing-note{display:block;}
   .consent label.opt{margin-bottom:0;font-size:14.5px;color:var(--muted);}
   .consent label.opt input{accent-color:var(--navy);}
-  button.submit{
-    display:block;width:100%;
+
+  /* Navigation */
+  .nav{display:flex;gap:14px;align-items:center;margin-top:22px;}
+  button.next{
+    flex:1;
     background:var(--navy);color:#fff;
     font-family:'Lato',Arial,sans-serif;
     font-size:15px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
     border:none;border-radius:8px;
-    padding:18px;margin-top:28px;cursor:pointer;
-    transition:opacity .15s;
+    padding:17px;cursor:pointer;transition:opacity .15s;
   }
-  button.submit:hover{opacity:.92;}
-  button.submit:disabled{opacity:.55;cursor:default;}
+  button.next:hover{opacity:.92;}
+  button.next:disabled{opacity:.55;cursor:default;}
+  button.back{
+    background:transparent;border:1px solid var(--border);
+    color:var(--muted);
+    font-family:'Lato',Arial,sans-serif;
+    font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+    border-radius:8px;padding:15px 22px;cursor:pointer;transition:border-color .15s,color .15s;
+  }
+  button.back:hover{border-color:var(--gold);color:var(--navy);}
+  button.back.hidden{display:none;}
+
   .fineprint{
     text-align:center;font-size:12.5px;color:var(--muted);
     margin-top:18px;
   }
+  .pagefoot{
+    text-align:center;margin-top:26px;
+    font-family:Arial,Helvetica,sans-serif;font-size:12px;color:var(--muted);
+  }
+  .pagefoot a{color:var(--muted);}
+
   /* Success state */
   #success{display:none;text-align:center;padding:60px 10px;}
   #success .rule{width:56px;height:2px;background:var(--gold);margin:26px auto;}
@@ -107,8 +138,9 @@
   #success p{font-size:16.5px;max-width:440px;margin:0 auto 12px auto;}
   @media (max-width:480px){
     .brand h1{font-size:28px;}
-    .qtext{font-size:17px;}
-    .wrap{padding-top:36px;}
+    .qtext{font-size:17.5px;}
+    .wrap{padding-top:32px;}
+    button.back{padding:15px 16px;}
   }
 </style>
 </head>
@@ -119,115 +151,163 @@
     <div class="rule"></div>
   </div>
   <div id="formview">
-    <div class="intro">
-      <p>Answer from specific moments, not your self-image. If an answer is &ldquo;it depends,&rdquo; pick the version of you that shows up when it matters most.</p>
-      <p>Take your time — these questions ask you to notice things you usually move past. Your Pattern Report arrives by email.</p>
+    <div class="progresswrap">
+      <div class="progressbar"><div class="progressfill" id="progressfill"></div></div>
+      <div class="progresstext" id="progresstext">1 of 10</div>
     </div>
+
     <form id="prform" autocomplete="on" novalidate>
-      <div class="card" data-req="1">
-        <div class="qtext">Email</div>
-        <input type="email" name="emailAddress" id="email" placeholder="you@example.com" autocomplete="email">
-        <div class="missing-note">Please enter your email — it's where your report arrives.</div>
+      <div class="stepbody">
+
+        <!-- STEP 0 — intro + email + name -->
+        <section class="step active">
+          <div class="intro">
+            <p>Answer from specific moments, not your self-image. If an answer is &ldquo;it depends,&rdquo; pick the version of you that shows up when it matters most.</p>
+            <p>Take your time — these questions ask you to notice things you usually move past. Your Pattern Report arrives by email.</p>
+          </div>
+          <div class="card" data-req="1">
+            <div class="qtext">Email</div>
+            <input type="email" name="emailAddress" id="email" placeholder="you@example.com" autocomplete="email">
+            <div class="missing-note">Please enter your email — it's where your report arrives.</div>
+          </div>
+          <div class="card" data-req="1">
+            <div class="qtext">First name</div>
+            <input type="text" name="entry.987787160" id="fname" placeholder="Your first name" autocomplete="given-name">
+            <div class="missing-note">Please enter your first name.</div>
+          </div>
+          <div class="card" data-req="1">
+            <div class="qtext">Think of the last thing you started that genuinely mattered to you. What happened?</div>
+            <label class="opt"><input type="radio" name="entry.1139891481" value="I'm still with it"><span>I'm still with it</span></label>
+            <label class="opt"><input type="radio" name="entry.1139891481" value="I saw it through"><span>I saw it through</span></label>
+            <label class="opt"><input type="radio" name="entry.1139891481" value="It's waiting for me — I drifted somewhere else along the way"><span>It's waiting for me — I drifted somewhere else along the way</span></label>
+            <label class="opt"><input type="radio" name="entry.1139891481" value="I drift from most things that matter to me"><span>I drift from most things that matter to me</span></label>
+            <div class="missing-note">Please choose one.</div>
+          </div>
+        </section>
+
+        <!-- STEP 2 -->
+        <section class="step">
+          <div class="card" data-req="1">
+            <div class="qtext">Name one thing — silently, right now — that you've been meaning to begin. When you get near that thing, what happens?</div>
+            <label class="opt"><input type="radio" name="entry.1503109560" value="I begin — maybe imperfectly, but I begin"><span>I begin — maybe imperfectly, but I begin</span></label>
+            <label class="opt"><input type="radio" name="entry.1503109560" value="I circle it — prepare, research, tidy, delay"><span>I circle it — prepare, research, tidy, delay</span></label>
+            <label class="opt"><input type="radio" name="entry.1503109560" value="I've stopped going near it"><span>I've stopped going near it</span></label>
+            <div class="missing-note">Please choose one.</div>
+          </div>
+        </section>
+
+        <!-- STEP 3 -->
+        <section class="step">
+          <div class="card" data-req="1">
+            <div class="qtext">Think of the last time real effort was asked of you. What did you do?</div>
+            <label class="opt"><input type="radio" name="entry.934190484" value="I met it with what I actually had"><span>I met it with what I actually had</span></label>
+            <label class="opt"><input type="radio" name="entry.934190484" value="I held back — I did less than I could"><span>I held back — I did less than I could</span></label>
+            <label class="opt"><input type="radio" name="entry.934190484" value="I pushed past what was sustainable — I overrode my limits"><span>I pushed past what was sustainable — I overrode my limits</span></label>
+            <div class="missing-note">Please choose one.</div>
+          </div>
+        </section>
+
+        <!-- STEP 4 -->
+        <section class="step">
+          <div class="card" data-req="1">
+            <div class="qtext">Recall the last time intensity rose — a hard conversation, a charged room, a rising feeling. What did you do?</div>
+            <label class="opt"><input type="radio" name="entry.1730774306" value="I stayed in contact"><span>I stayed in contact</span></label>
+            <label class="opt"><input type="radio" name="entry.1730774306" value="I wanted to leave, and I noticed the pull"><span>I wanted to leave, and I noticed the pull</span></label>
+            <label class="opt"><input type="radio" name="entry.1730774306" value="I left — the room, the topic, or the moment"><span>I left — the room, the topic, or the moment</span></label>
+            <div class="missing-note">Please choose one.</div>
+          </div>
+        </section>
+
+        <!-- STEP 5 -->
+        <section class="step">
+          <div class="card" data-req="1">
+            <div class="qtext">Think of the last pause that opened in your day. What happened to it?</div>
+            <label class="opt"><input type="radio" name="entry.1404873915" value="I let it stay open"><span>I let it stay open</span></label>
+            <label class="opt"><input type="radio" name="entry.1404873915" value="I filled it — phone, snack, task — before stillness arrived"><span>I filled it — phone, snack, task — before stillness arrived</span></label>
+            <label class="opt"><input type="radio" name="entry.1404873915" value="I can't recall a pause. They all get filled."><span>I can't recall a pause. They all get filled.</span></label>
+            <div class="missing-note">Please choose one.</div>
+          </div>
+        </section>
+
+        <!-- STEP 6 -->
+        <section class="step">
+          <div class="card" data-req="1">
+            <div class="qtext">Recall your last moment of real emotional intensity — conflict, grief, being seen. What happened in your body?</div>
+            <label class="opt"><input type="radio" name="entry.1145101358" value="It stayed open — I could feel and keep moving"><span>It stayed open — I could feel and keep moving</span></label>
+            <label class="opt"><input type="radio" name="entry.1145101358" value="It tightened: throat, chest, jaw, held breath"><span>It tightened: throat, chest, jaw, held breath</span></label>
+            <label class="opt"><input type="radio" name="entry.1145101358" value="It went quiet or numb — I stopped feeling it until later"><span>It went quiet or numb — I stopped feeling it until later</span></label>
+            <div class="missing-note">Please choose one.</div>
+          </div>
+        </section>
+
+        <!-- STEP 7 -->
+        <section class="step">
+          <div class="card" data-req="1">
+            <div class="qtext">Think of the last time you weren't okay. Did the people around you know?</div>
+            <label class="opt"><input type="radio" name="entry.125316906" value="The people close to me could tell"><span>The people close to me could tell</span></label>
+            <label class="opt"><input type="radio" name="entry.125316906" value="No — I presented calm regardless of what was happening inside"><span>No — I presented calm regardless of what was happening inside</span></label>
+            <label class="opt"><input type="radio" name="entry.125316906" value="I'm always OK"><span>I'm always OK</span></label>
+            <div class="missing-note">Please choose one.</div>
+          </div>
+        </section>
+
+        <!-- STEP 8 -->
+        <section class="step">
+          <div class="card" data-req="1">
+            <div class="qtext">Think of the last time your body asked for sound — a sigh, a groan, crying, even a burp. What happened?</div>
+            <label class="opt"><input type="radio" name="entry.1658615560" value="It moved — I let it out"><span>It moved — I let it out</span></label>
+            <label class="opt"><input type="radio" name="entry.1658615560" value="Depended who was around"><span>Depended who was around</span></label>
+            <label class="opt"><input type="radio" name="entry.1658615560" value="I kept it contained, even alone"><span>I kept it contained, even alone</span></label>
+            <div class="missing-note">Please choose one.</div>
+          </div>
+        </section>
+
+        <!-- STEP 9 -->
+        <section class="step">
+          <div class="card" data-req="1">
+            <div class="qtext">Recall the last thing that went wrong for you. What happened next?</div>
+            <label class="opt"><input type="radio" name="entry.670832486" value="It passed through — I dealt with it and moved"><span>It passed through — I dealt with it and moved</span></label>
+            <label class="opt"><input type="radio" name="entry.670832486" value="It became a story I replayed — about them, about me, about how it always goes"><span>It became a story I replayed — about them, about me, about how it always goes</span></label>
+            <div class="missing-note">Please choose one.</div>
+          </div>
+        </section>
+
+        <!-- STEP 10 -->
+        <section class="step">
+          <div class="card" data-req="1">
+            <div class="qtext">Right now, in this moment, answering this — where is your attention?</div>
+            <label class="opt"><input type="radio" name="entry.1750462843" value="Here"><span>Here</span></label>
+            <label class="opt"><input type="radio" name="entry.1750462843" value="Split — part here, part on what's next"><span>Split — part here, part on what's next</span></label>
+            <label class="opt"><input type="radio" name="entry.1750462843" value="Already gone — I'm rushing this to get to the next thing"><span>Already gone — I'm rushing this to get to the next thing</span></label>
+            <div class="missing-note">Please choose one.</div>
+          </div>
+        </section>
+
+        <!-- STEP 11 — consent + submit -->
+        <section class="step">
+          <div class="card consent">
+            <label class="opt">
+              <input type="checkbox" name="entry.955860378" value="Yes, Send me occasional notes from IQF — patterns, practice, what the collective data shows.">
+              <span>Send me occasional notes from IQF — patterns, practice, what the collective data shows. (Optional)</span>
+            </label>
+          </div>
+          <div class="fineprint">Your report arrives by email within a few minutes.</div>
+        </section>
+
       </div>
-      <div class="card" data-req="1">
-        <div class="qtext">First name</div>
-        <input type="text" name="entry.987787160" id="fname" placeholder="Your first name" autocomplete="given-name">
-        <div class="missing-note">Please enter your first name.</div>
+
+      <div class="nav">
+        <button type="button" class="back hidden" id="backbtn">Back</button>
+        <button type="submit" class="next" id="nextbtn">Next</button>
       </div>
-      <div class="card" data-req="1">
-        <div class="qnum">1 of 10</div>
-        <div class="qtext">Think of the last thing you started that genuinely mattered to you. What happened?</div>
-        <label class="opt"><input type="radio" name="entry.1139891481" value="I'm still with it"><span>I'm still with it</span></label>
-        <label class="opt"><input type="radio" name="entry.1139891481" value="I saw it through"><span>I saw it through</span></label>
-        <label class="opt"><input type="radio" name="entry.1139891481" value="It's waiting for me — I drifted somewhere else along the way"><span>It's waiting for me — I drifted somewhere else along the way</span></label>
-        <label class="opt"><input type="radio" name="entry.1139891481" value="I drift from most things that matter to me"><span>I drift from most things that matter to me</span></label>
-        <div class="missing-note">Please choose one.</div>
-      </div>
-      <div class="card" data-req="1">
-        <div class="qnum">2 of 10</div>
-        <div class="qtext">Name one thing — silently, right now — that you've been meaning to begin. When you get near that thing, what happens?</div>
-        <label class="opt"><input type="radio" name="entry.1503109560" value="I begin — maybe imperfectly, but I begin"><span>I begin — maybe imperfectly, but I begin</span></label>
-        <label class="opt"><input type="radio" name="entry.1503109560" value="I circle it — prepare, research, tidy, delay"><span>I circle it — prepare, research, tidy, delay</span></label>
-        <label class="opt"><input type="radio" name="entry.1503109560" value="I've stopped going near it"><span>I've stopped going near it</span></label>
-        <div class="missing-note">Please choose one.</div>
-      </div>
-      <div class="card" data-req="1">
-        <div class="qnum">3 of 10</div>
-        <div class="qtext">Think of the last time real effort was asked of you. What did you do?</div>
-        <label class="opt"><input type="radio" name="entry.934190484" value="I met it with what I actually had"><span>I met it with what I actually had</span></label>
-        <label class="opt"><input type="radio" name="entry.934190484" value="I held back — I did less than I could"><span>I held back — I did less than I could</span></label>
-        <label class="opt"><input type="radio" name="entry.934190484" value="I pushed past what was sustainable — I overrode my limits"><span>I pushed past what was sustainable — I overrode my limits</span></label>
-        <div class="missing-note">Please choose one.</div>
-      </div>
-      <div class="card" data-req="1">
-        <div class="qnum">4 of 10</div>
-        <div class="qtext">Recall the last time intensity rose — a hard conversation, a charged room, a rising feeling. What did you do?</div>
-        <label class="opt"><input type="radio" name="entry.1730774306" value="I stayed in contact"><span>I stayed in contact</span></label>
-        <label class="opt"><input type="radio" name="entry.1730774306" value="I wanted to leave, and I noticed the pull"><span>I wanted to leave, and I noticed the pull</span></label>
-        <label class="opt"><input type="radio" name="entry.1730774306" value="I left — the room, the topic, or the moment"><span>I left — the room, the topic, or the moment</span></label>
-        <div class="missing-note">Please choose one.</div>
-      </div>
-      <div class="card" data-req="1">
-        <div class="qnum">5 of 10</div>
-        <div class="qtext">Think of the last pause that opened in your day. What happened to it?</div>
-        <label class="opt"><input type="radio" name="entry.1404873915" value="I let it stay open"><span>I let it stay open</span></label>
-        <label class="opt"><input type="radio" name="entry.1404873915" value="I filled it — phone, snack, task — before stillness arrived"><span>I filled it — phone, snack, task — before stillness arrived</span></label>
-        <label class="opt"><input type="radio" name="entry.1404873915" value="I can't recall a pause. They all get filled."><span>I can't recall a pause. They all get filled.</span></label>
-        <div class="missing-note">Please choose one.</div>
-      </div>
-      <div class="card" data-req="1">
-        <div class="qnum">6 of 10</div>
-        <div class="qtext">Recall your last moment of real emotional intensity — conflict, grief, being seen. What happened in your body?</div>
-        <label class="opt"><input type="radio" name="entry.1145101358" value="It stayed open — I could feel and keep moving"><span>It stayed open — I could feel and keep moving</span></label>
-        <label class="opt"><input type="radio" name="entry.1145101358" value="It tightened: throat, chest, jaw, held breath"><span>It tightened: throat, chest, jaw, held breath</span></label>
-        <label class="opt"><input type="radio" name="entry.1145101358" value="It went quiet or numb — I stopped feeling it until later"><span>It went quiet or numb — I stopped feeling it until later</span></label>
-        <div class="missing-note">Please choose one.</div>
-      </div>
-      <div class="card" data-req="1">
-        <div class="qnum">7 of 10</div>
-        <div class="qtext">Think of the last time you weren't okay. Did the people around you know?</div>
-        <label class="opt"><input type="radio" name="entry.125316906" value="The people close to me could tell"><span>The people close to me could tell</span></label>
-        <label class="opt"><input type="radio" name="entry.125316906" value="No — I presented calm regardless of what was happening inside"><span>No — I presented calm regardless of what was happening inside</span></label>
-        <label class="opt"><input type="radio" name="entry.125316906" value="I'm always OK"><span>I'm always OK</span></label>
-        <div class="missing-note">Please choose one.</div>
-      </div>
-      <div class="card" data-req="1">
-        <div class="qnum">8 of 10</div>
-        <div class="qtext">Think of the last time your body asked for sound — a sigh, a groan, crying, even a burp. What happened?</div>
-        <label class="opt"><input type="radio" name="entry.1658615560" value="It moved — I let it out"><span>It moved — I let it out</span></label>
-        <label class="opt"><input type="radio" name="entry.1658615560" value="Depended who was around"><span>Depended who was around</span></label>
-        <label class="opt"><input type="radio" name="entry.1658615560" value="I kept it contained, even alone"><span>I kept it contained, even alone</span></label>
-        <div class="missing-note">Please choose one.</div>
-      </div>
-      <div class="card" data-req="1">
-        <div class="qnum">9 of 10</div>
-        <div class="qtext">Recall the last thing that went wrong for you. What happened next?</div>
-        <label class="opt"><input type="radio" name="entry.670832486" value="It passed through — I dealt with it and moved"><span>It passed through — I dealt with it and moved</span></label>
-        <label class="opt"><input type="radio" name="entry.670832486" value="It became a story I replayed — about them, about me, about how it always goes"><span>It became a story I replayed — about them, about me, about how it always goes</span></label>
-        <div class="missing-note">Please choose one.</div>
-      </div>
-      <div class="card" data-req="1">
-        <div class="qnum">10 of 10</div>
-        <div class="qtext">Right now, in this moment, answering this — where is your attention?</div>
-        <label class="opt"><input type="radio" name="entry.1750462843" value="Here"><span>Here</span></label>
-        <label class="opt"><input type="radio" name="entry.1750462843" value="Split — part here, part on what's next"><span>Split — part here, part on what's next</span></label>
-        <label class="opt"><input type="radio" name="entry.1750462843" value="Already gone — I'm rushing this to get to the next thing"><span>Already gone — I'm rushing this to get to the next thing</span></label>
-        <div class="missing-note">Please choose one.</div>
-      </div>
-      <div class="card consent">
-        <label class="opt">
-          <input type="checkbox" name="entry.955860378" value="Yes, Send me occasional notes from IQF — patterns, practice, what the collective data shows.">
-          <span>Send me occasional notes from IQF — patterns, practice, what the collective data shows. (Optional)</span>
-        </label>
-      </div>
-      <button type="submit" class="submit" id="submitbtn">Get My Pattern Report</button>
-      <div class="fineprint">Your report arrives by email within a few minutes.</div>
-      <div style="text-align:center; margin-top:22px; font-family:Arial,Helvetica,sans-serif; font-size:12px; color:var(--muted);">
+
+      <div class="pagefoot">
         &copy; 2026 Institute of Quantum Frequency &middot;
-        <a href="https://www.instituteofquantumfrequency.com/privacy-policy" style="color:var(--muted);">Privacy Policy</a>
+        <a href="https://www.instituteofquantumfrequency.com/privacy-policy">Privacy Policy</a>
       </div>
     </form>
   </div>
+
   <div id="success">
     <h2>Your Pattern Report is on its way.</h2>
     <div class="rule"></div>
@@ -238,9 +318,16 @@
 <script>
 (function(){
   var FORM_ACTION = "https://docs.google.com/forms/d/e/1FAIpQLSe6qybjfh5eRkWaRvg3zj6eOr7c7CIg53syvP5nLjY0__Do4A/formResponse";
-  var form = document.getElementById('prform');
-  var btn  = document.getElementById('submitbtn');
-  // visual selection state for option cards
+  var form  = document.getElementById('prform');
+  var btn   = document.getElementById('nextbtn');
+  var back  = document.getElementById('backbtn');
+  var fill  = document.getElementById('progressfill');
+  var ptext = document.getElementById('progresstext');
+  var steps = Array.prototype.slice.call(document.querySelectorAll('.step'));
+  var last  = steps.length - 1;      // index of the final (consent) step
+  var current = 0;
+
+  // ---- selection visuals + auto-advance on radio pick ----
   document.querySelectorAll('label.opt input[type=radio]').forEach(function(inp){
     inp.addEventListener('change', function(){
       var name = inp.name;
@@ -249,6 +336,15 @@
       });
       inp.closest('label.opt').classList.add('selected');
       inp.closest('.card').classList.remove('missing');
+      var stepEl = inp.closest('.step');
+      var stepIndex = steps.indexOf(stepEl);
+      // don't auto-advance on a step that also has text fields to fill (the first screen)
+      var hasText = !!stepEl.querySelector('input[type=text],input[type=email]');
+      if (hasText) return;
+      // gentle auto-advance, but only if they're still on this step
+      setTimeout(function(){
+        if (current === stepIndex && current < last) goTo(current + 1);
+      }, 450);
     });
   });
   document.querySelectorAll('label.opt input[type=checkbox]').forEach(function(inp){
@@ -256,9 +352,11 @@
       inp.closest('label.opt').classList.toggle('selected', inp.checked);
     });
   });
-  function validate(){
+
+  // ---- validation ----
+  function validateStep(stepEl){
     var firstMissing = null;
-    document.querySelectorAll('.card[data-req]').forEach(function(card){
+    stepEl.querySelectorAll('.card[data-req]').forEach(function(card){
       var ok = false;
       var text = card.querySelector('input[type=text],input[type=email]');
       if (text){
@@ -273,11 +371,63 @@
       if (!ok && !firstMissing) firstMissing = card;
     });
     if (firstMissing){
-      setTimeout(postHeight, 100);
       firstMissing.scrollIntoView({behavior:'smooth', block:'center'});
+      setTimeout(postHeight, 100);
       return false;
     }
     return true;
+  }
+
+  // ---- step display ----
+  function goTo(i){
+    steps[current].classList.remove('active');
+    current = i;
+    steps[current].classList.add('active');
+    updateChrome();
+    postHeight();
+  }
+  function updateChrome(){
+    // progress fill across all steps
+    fill.style.width = Math.round((current / last) * 100) + '%';
+    // progress label
+    if (current === last){
+      ptext.textContent = 'One last thing';
+    } else {
+      ptext.textContent = (current + 1) + ' of 10';
+    }
+    // buttons
+    back.classList.toggle('hidden', current === 0);
+    btn.textContent = (current === last) ? 'Get My Pattern Report' : 'Next';
+  }
+
+  // ---- navigation ----
+  function advance(){
+    if (!validateStep(steps[current])) return;
+    if (current === last){ doSubmit(); return; }
+    goTo(current + 1);
+  }
+  back.addEventListener('click', function(){
+    if (current > 0) goTo(current - 1);
+  });
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    advance();
+  });
+
+  // ---- submit ----
+  function doSubmit(){
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+    var params = new URLSearchParams();
+    new FormData(form).forEach(function(value, name){
+      params.append(name, String(value).trim());
+    });
+    fetch(FORM_ACTION, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: params.toString()
+    }).then(showSuccess).catch(showSuccess);
   }
   function showSuccess(){
     document.getElementById('formview').style.display = 'none';
@@ -287,53 +437,32 @@
       document.getElementById('success').scrollIntoView({behavior:'smooth', block:'center'});
     }, 150);
   }
-  form.addEventListener('submit', function(e){
-    e.preventDefault();
-    if (!validate()) return;
-    btn.disabled = true;
-    btn.textContent = 'Sending…';
-    // Build URL-encoded body from the form fields
-    var params = new URLSearchParams();
-    new FormData(form).forEach(function(value, name){
-      params.append(name, String(value).trim());
-    });
-    // Post directly to Google with no-cors — works inside iframes on mobile.
-    // no-cors means we can't read the response, but the submission still records.
-    fetch(FORM_ACTION, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: params.toString()
-    }).then(function(){
-      showSuccess();
-    }).catch(function(){
-      // Even on network error the POST usually lands; show success but don't block.
-      showSuccess();
-    });
-  });
+
+  // ---- iframe height messaging (unchanged contract with the Kajabi wrapper) ----
   var lastH = 0;
   function postHeight(){
     try{
       var el = document.querySelector('.wrap');
       var h = Math.ceil(el.getBoundingClientRect().height) + 40;
-      if (Math.abs(h - lastH) < 5) return; // ignore jitter, prevents growth loop
+      if (Math.abs(h - lastH) < 5) return;
       lastH = h;
       parent.postMessage({type:'pr-height', height: h}, '*');
     }catch(err){}
   }
-  // re-measure repeatedly while fonts/images settle, and watch for layout changes
   window.addEventListener('load', function(){
+    updateChrome();
     postHeight();
     var tries = 0;
     var iv = setInterval(function(){
       postHeight();
-      if (++tries > 10) clearInterval(iv); // covers the first ~5 seconds
+      if (++tries > 10) clearInterval(iv);
     }, 500);
   });
   window.addEventListener('resize', postHeight);
   if (window.ResizeObserver){
     new ResizeObserver(postHeight).observe(document.querySelector('.wrap'));
   }
+  updateChrome();
 })();
 </script>
 </body>
