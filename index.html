@@ -29,7 +29,7 @@
     line-height:1.6;
     -webkit-font-smoothing:antialiased;
   }
-  .wrap{max-width:1000px;margin:0 auto;padding:56px 24px 40px 24px;}
+  .wrap{max-width:1000px;margin:0 auto;padding:56px 24px 24px 24px;}
   .brand{text-align:center;margin-bottom:34px;}
   .brand h1{
     font-family:'Newsreader',serif;
@@ -469,7 +469,10 @@
   function postHeight(){
     try{
       var el = document.querySelector('.wrap');
-      var h = Math.ceil(el.getBoundingClientRect().height) + 40;
+      var nav = document.querySelector('.nav');
+      var suc = document.getElementById('success');
+      var bottom = (suc && getComputedStyle(suc).display !== 'none') ? suc.getBoundingClientRect().bottom : (nav ? nav.getBoundingClientRect().bottom : el.getBoundingClientRect().bottom);
+      var h = Math.ceil(bottom - el.getBoundingClientRect().top) + 24;
       if (Math.abs(h - lastH) < 5) return;
       lastH = h;
       parent.postMessage({type:'pr-height', height: h}, '*');
