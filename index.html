@@ -127,6 +127,7 @@
   }
   button.back:hover{border-color:var(--gold2);color:var(--cream);}
   button.back.hidden{display:none;}
+  button.next.hidden{display:none;}
 
   .fineprint{
     text-align:center;font-size:13.5px;color:var(--muted);
@@ -139,7 +140,7 @@
   .pagefoot a{color:rgba(244,240,230,.5);}
 
   /* Success state */
-  #success{display:none;text-align:center;padding:70px 10px;}
+  #success{display:none;text-align:center;padding:10px;}
   #success .rule{width:56px;height:2px;background:var(--gold);margin:30px auto;}
   #success h2{
     font-family:'Newsreader',serif;font-weight:500;letter-spacing:-.02em;
@@ -316,7 +317,6 @@
               <span>Send me occasional notes from IQF — patterns, practice, what the collective data shows. (Optional)</span>
             </label>
           </div>
-          <div class="fineprint">Your report arrives by email within a few minutes.</div>
         </section>
 
       </div>
@@ -329,12 +329,7 @@
     </form>
   </div>
 
-  <div id="success">
-    <h2>Your Pattern Report is on its way.</h2>
-    <div class="rule"></div>
-    <p>Check your inbox in the next few minutes.</p>
-    <p class="small">If it hasn't arrived in ten minutes, check your spam or promotions folder.</p>
-  </div>
+  <div id="success"></div>
 </div>
 <script>
 (function(){
@@ -360,6 +355,13 @@
 
   // ---- selection visuals + auto-advance on radio pick ----
   document.querySelectorAll('label.opt input[type=radio]').forEach(function(inp){
+    var wasChecked = false;
+    inp.closest('label.opt').addEventListener('pointerdown', function(){ wasChecked = inp.checked; });
+    inp.addEventListener('click', function(){
+      if (!wasChecked) return;
+      var stepEl = inp.closest('.step'), stepIndex = steps.indexOf(stepEl);
+      setTimeout(function(){ if (current === stepIndex && current < last) goTo(current + 1); }, 200);
+    });
     inp.addEventListener('change', function(){
       var name = inp.name;
       document.querySelectorAll('input[name="'+name+'"]').forEach(function(other){
@@ -430,6 +432,7 @@
     // buttons
     back.classList.toggle('hidden', current === 0);
     btn.textContent = (current === last) ? 'Get My Pattern Report' : 'Next';
+    btn.classList.toggle('hidden', current !== last);
   }
 
   // ---- navigation ----
@@ -477,6 +480,7 @@
   function showSuccess(){
     document.getElementById('formview').style.display = 'none';
     document.getElementById('success').style.display = 'block';
+    try{ parent.postMessage({type:'pr-done'}, '*'); }catch(err){}
     setTimeout(function(){
       postHeight();
       document.getElementById('success').scrollIntoView({behavior:'smooth', block:'center'});
