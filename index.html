@@ -339,6 +339,15 @@
 <script>
 (function(){
   var FORM_ACTION = "https://docs.google.com/forms/d/e/1FAIpQLSe6qybjfh5eRkWaRvg3zj6eOr7c7CIg53syvP5nLjY0__Do4A/formResponse";
+  // ---- count the steps: one tick per step, per browser, per day, on the Report tab of the Make 85 sheet. Counts only, no names or emails. ----
+  var TALLY_URL = 'https://script.google.com/macros/s/AKfycbxGxxpM_YcGEXOkcw0Ei7oW4jJQSXyQXPW4BnsJ5Vc8NhsdfM8xMGJvoAwDJvnlxIqtkQ/exec';
+  var TALLY_DAY = (function(){ var d = new Date(); return d.getFullYear()*10000 + (d.getMonth()+1)*100 + d.getDate(); })();
+  var TALLY_KEY = 'pr-t-' + TALLY_DAY;
+  function tally(step){
+    try{ var d = JSON.parse(localStorage.getItem(TALLY_KEY) || '{}'); if (d[step]) return; d[step] = 1; localStorage.setItem(TALLY_KEY, JSON.stringify(d)); }catch(e){}
+    try{ var p = new URLSearchParams({tally: step, day: TALLY_DAY, sheet: 'Report'}); fetch(TALLY_URL, {method:'POST', mode:'no-cors', keepalive:true, body: p}).catch(function(){}); }catch(e){}
+  }
+  tally('started');
   var form  = document.getElementById('prform');
   var btn   = document.getElementById('nextbtn');
   var back  = document.getElementById('backbtn');
@@ -403,6 +412,7 @@
   function goTo(i){
     steps[current].classList.remove('active');
     current = i;
+    if (i === last) tally('email'); else if (i >= 1) tally('q' + (i + 1));
     steps[current].classList.add('active');
     updateChrome();
     postHeight();
@@ -437,6 +447,7 @@
 
   // ---- submit ----
   function doSubmit(){
+    tally('submitted');
     btn.disabled = true;
     btn.textContent = 'Sending…';
     var params = new URLSearchParams();
