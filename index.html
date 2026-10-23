@@ -343,6 +343,7 @@
   var TALLY_URL = 'https://script.google.com/macros/s/AKfycbxGxxpM_YcGEXOkcw0Ei7oW4jJQSXyQXPW4BnsJ5Vc8NhsdfM8xMGJvoAwDJvnlxIqtkQ/exec';
   var TALLY_DAY = (function(){ var d = new Date(); return d.getFullYear()*10000 + (d.getMonth()+1)*100 + d.getDate(); })();
   var TALLY_KEY = 'pr-t-' + TALLY_DAY;
+  var KAJABI_FORM = 'https://www.instituteofquantumfrequency.com/forms/2149762571/form_submissions';
   function tally(step){
     try{ var d = JSON.parse(localStorage.getItem(TALLY_KEY) || '{}'); if (d[step]) return; d[step] = 1; localStorage.setItem(TALLY_KEY, JSON.stringify(d)); }catch(e){}
     try{ var p = new URLSearchParams({tally: step, day: TALLY_DAY, sheet: 'Report'}); fetch(TALLY_URL, {method:'POST', mode:'no-cors', keepalive:true, body: p}).catch(function(){}); }catch(e){}
@@ -449,6 +450,13 @@
   function doSubmit(){
     tally('submitted');
     btn.disabled = true;
+    // ---- also add them to Kajabi (the Pattern Report form, which subscribes them to the Pattern Report Follow-Up sequence) ----
+    try{
+      var kj = new FormData();
+      kj.append('form_submission[email]', (document.getElementById('email').value || '').trim());
+      kj.append('form_submission[name]', (document.getElementById('fname').value || '').trim());
+      fetch(KAJABI_FORM, {method:'POST', mode:'no-cors', keepalive:true, body: kj}).catch(function(){});
+    }catch(e){}
     btn.textContent = 'Sending…';
     var params = new URLSearchParams();
     new FormData(form).forEach(function(value, name){
