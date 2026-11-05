@@ -37,6 +37,8 @@
     font-size:clamp(44px,6.5vw,80px);line-height:.98;
     color:var(--cream);text-wrap:balance;
   }
+  .brand .find{font-family:'Newsreader',serif;font-style:italic;color:var(--gold2);font-size:clamp(26px,3.2vw,38px);line-height:1.2;margin-top:18px;}
+  .brand .howmany{font-size:clamp(15.5px,1.4vw,18px);color:rgba(244,240,230,.82);margin-top:10px;}
   .brand .rule{width:56px;height:2px;background:var(--gold);margin:26px auto 0 auto;}
 
   /* Progress */
@@ -166,6 +168,8 @@
 <div class="wrap">
   <div class="brand">
     <h1>Pattern Report</h1>
+    <p class="find">First, find yourself.</p>
+    <p class="howmany">Answer 10 questions about your everyday life.</p>
     <div class="rule"></div>
   </div>
   <div id="formview">
@@ -179,7 +183,7 @@
         <!-- QUESTION 1 -->
         <section class="step active">
           <div class="intro">
-            <p>Take your time — these questions ask you to notice things you may usually move past.</p>
+            <p>Take your time. These questions ask you to notice patterns you may not have paid attention to before.</p>
           </div>
           <div class="card" data-req="1">
             <div class="qtext">Think of the last thing you started that genuinely mattered to you. What happened?</div>
@@ -435,6 +439,7 @@
     }
     // buttons
     back.classList.toggle('hidden', current === 0);
+    document.querySelectorAll('.brand .find,.brand .howmany').forEach(function(el){ el.style.display = (current === 0) ? '' : 'none'; });
     btn.textContent = (current === last) ? 'Get My Pattern Report' : 'Next';
     btn.classList.toggle('hidden', current !== last);
   }
