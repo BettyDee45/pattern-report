@@ -79,7 +79,7 @@
     font-family:'Newsreader',serif;
     font-weight:500;letter-spacing:-.01em;
     font-size:clamp(27px,3.2vw,38px);line-height:1.22;
-    color:var(--cream);text-wrap:balance;
+    color:var(--cream);text-wrap:pretty;
     margin-bottom:28px;
   }
   label.opt{
@@ -160,8 +160,16 @@
     input[type=text],input[type=email]{font-size:16.5px;}
     button.back{padding:18px 18px;}
   }
-  .intro{color:var(--gold2);font-style:italic;}
+  .intro{color:#9aa6e8;font-style:italic;}
   .hint{font-size:13.5px;line-height:1.45;color:var(--muted);margin-top:14px;}
+
+  /* Last step: one compact card */
+  .step.laststep{background:rgba(255,255,255,.035);border:1px solid var(--line);border-radius:22px;padding:30px 34px 18px;margin:22px 0;}
+  .laststep .card{background:none;border:none;border-radius:0;padding:0;margin:0 0 22px 0;}
+  .laststep .qtext{font-family:'DM Sans',system-ui,sans-serif;font-size:12.5px;letter-spacing:.22em;text-transform:uppercase;font-weight:600;color:var(--gold);margin-bottom:10px;}
+  .laststep label.opt{border:none;padding:2px 0;margin:0;font-size:15px;color:rgba(244,240,230,.8);}
+  .laststep label.opt.selected{background:none;}
+  @media (max-width:600px){.step.laststep{padding:22px 18px 10px;}}
 </style>
 </head>
 <body>
@@ -170,7 +178,6 @@
     <h1>Pattern Report</h1>
     <p class="find">First, find yourself.</p>
     <p class="howmany">Answer 10 questions about your everyday life.</p>
-    <div class="rule"></div>
   </div>
   <div id="formview">
     <div class="progresswrap">
@@ -305,7 +312,7 @@
         </section>
 
         <!-- LAST — email, name, consent, submit -->
-        <section class="step">
+        <section class="step laststep">
           <div class="card" data-req="1">
             <div class="qtext">Email</div>
             <input type="email" name="emailAddress" id="email" placeholder="you@example.com" autocomplete="email">
