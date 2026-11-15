@@ -170,6 +170,25 @@
   .laststep label.opt{border:none;padding:2px 0;margin:0;font-size:15px;color:rgba(244,240,230,.8);}
   .laststep label.opt.selected{background:none;}
   @media (max-width:600px){.step.laststep{padding:22px 18px 10px;}}
+  /* v6: phone first screen — reason above the question, question and first answers visible */
+  .hm-phone,.after{display:none;}
+  @media (max-width:560px){
+    .wrap{padding:6px 18px 56px 18px;}
+    .brand{margin-bottom:14px;}
+    .brand h1{font-size:36px;}
+    .brand .find{font-size:22px;margin-top:8px;}
+    .brand .howmany{font-size:15px;line-height:1.45;margin-top:8px;color:rgba(244,240,230,.88);}
+    .hm-desk,.intro-desk{display:none;}
+    .hm-phone{display:block;}
+    .progresstext{margin-top:10px;}
+    .card{padding:18px 18px;margin:12px 0;}
+    .qtext{font-size:24px;margin-bottom:16px;}
+    label.opt{padding:12px 14px;font-size:16px;margin-bottom:9px;}
+    .after{display:block;text-align:center;margin:6px auto 0 auto;}
+    .after .intro{font-size:16.5px;line-height:1.4;margin:8px auto 0 auto;}
+    .after .intro p{margin-bottom:4px;}
+    .after .howmany2{font-size:14.5px;line-height:1.45;color:rgba(244,240,230,.82);margin-top:8px;}
+  }
 </style>
 </head>
 <body>
@@ -177,7 +196,8 @@
   <div class="brand">
     <h1>Pattern Report</h1>
     <p class="find">First, find yourself.</p>
-    <p class="howmany">Your first step in learning to read human patterns.<br>Answer 10 questions about your everyday life.</p>
+    <p class="howmany hm-desk">Your first step in learning to read human patterns.<br>Answer 10 questions about your everyday life.</p>
+    <p class="howmany hm-phone">Your personal Pattern Report arrives by email, showing which patterns have been active in your life.</p>
   </div>
   <div id="formview">
     <div class="progresswrap">
@@ -189,7 +209,7 @@
       <div class="stepbody">
         <!-- QUESTION 1 -->
         <section class="step active">
-          <div class="intro">
+          <div class="intro intro-desk">
             <p>Take your time. These questions ask you to notice patterns you may not have paid attention to before.</p>
           </div>
           <div class="card" data-req="1">
@@ -201,6 +221,12 @@
             <label class="opt"><input type="radio" name="entry.1139891481" value="I don't remember the last time I started something that mattered to me"><span>I don't remember the last time I started something that mattered to me</span></label>
             <div class="hint">If an answer is &ldquo;it depends,&rdquo; pick the version of you that shows up when it matters most.</div>
             <div class="missing-note">Please choose one.</div>
+          </div>
+          <div class="after">
+            <div class="intro">
+              <p>Take your time. These questions ask you to notice patterns you may not have paid attention to before.</p>
+            </div>
+            <p class="howmany2">Your first step in learning to read human patterns.<br>Answer 10 questions about your everyday life.</p>
           </div>
         </section>
 
