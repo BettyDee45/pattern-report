@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
+<title>Institute of Quantum Frequency</title>
+<style>body{margin:0;background:#273047;color:#f4f0e6;font:16px Georgia,serif;display:flex;min-height:100vh;align-items:center;justify-content:center}a{color:#e0bd62}</style>
+</head><body><p id="m">Opening&hellip;</p>
+<script>
+// Counts a click from the Pattern Report email on the Report tab of the Make 85 sheet, then opens the page.
+// ?t=worksheet  -> the Pattern Observation Worksheet
+// ?t=code&c=12  -> Code 12's page
+(function(){
+  var TALLY_URL = 'https://script.google.com/macros/s/AKfycbxGxxpM_YcGEXOkcw0Ei7oW4jJQSXyQXPW4BnsJ5Vc8NhsdfM8xMGJvoAwDJvnlxIqtkQ/exec';
+  var WORKSHEET = 'https://drive.google.com/file/d/1BbkuD3jIXFAXnI9nElso1sSo8j74418x/view';
+  var SITE = 'https://www.instituteofquantumfrequency.com';
+  var TAG = '?utm_source=pattern-report-email&utm_medium=email&utm_campaign=pattern-report';
+  var q = new URLSearchParams(location.search), t = q.get('t'), c = parseInt(q.get('c'), 10), dest = SITE, step = '';
+  if (t === 'worksheet') { dest = WORKSHEET; step = 'worksheet'; }
+  else if (t === 'code' && c >= 1 && c <= 84) { dest = SITE + '/code-' + c + TAG; step = 'code'; }
+  var d = new Date(), day = d.getFullYear()*10000 + (d.getMonth()+1)*100 + d.getDate();
+  if (step) {
+    var once = true;
+    try { var k = 'go-' + day, s = JSON.parse(localStorage.getItem(k) || '{}'); if (s[step]) once = false; else { s[step] = 1; localStorage.setItem(k, JSON.stringify(s)); } } catch(e){}
+    if (once) {
+      var p = new URLSearchParams({tally: step, day: day, sheet: 'Report'});
+      try { if (!navigator.sendBeacon || !navigator.sendBeacon(TALLY_URL, p)) fetch(TALLY_URL, {method:'POST', mode:'no-cors', keepalive:true, body:p}); } catch(e){}
+    }
+  }
+  document.getElementById('m').innerHTML = '<a href="' + dest + '">Continue</a>';
+  setTimeout(function(){ location.replace(dest); }, 150);
+})();
+</script></body></html>
